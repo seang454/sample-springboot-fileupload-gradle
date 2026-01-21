@@ -4,7 +4,7 @@
 
   vars:
     repo_name: "seang454"
-    image_name: "spring-fileupload1"
+    image_name: "spring-fileupload"
     tag: "v1.0.0"
     dockerhub_username: "seang454"
     dockerhub_password: "YOUR_DOCKER_PAT

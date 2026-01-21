@@ -3,3 +3,6 @@ build-image:
 
 deploy-image:
     ansible-playbook -i inventory.ini deploy.yaml --ask-become-pass
+
+run-main-playbook:
+    ansible-playbook -i inventory.ini main.yaml --ask-become-pass

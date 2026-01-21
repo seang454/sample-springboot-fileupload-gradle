@@ -2,7 +2,7 @@
   hosts: node1
   become: yes
   vars:
-    image_name: "seang454/spring-fileupload1:v1.0.0"
+    image_name: "seang454/spring-fileupload:v1.0.0"
     compose_dir: "/opt/fileupload-app"
   tasks:
     - name: Create docker-compose directory
@@ -17,12 +17,12 @@
           version: "3.9"
           services:
             spring-app:
-              image: seang454/spring-fileupload1:v1.0.0
+              image: seang454/spring-fileupload:v1.0.0
               container_name: spring-fileupload
               ports:
                 - "8083:8080"  # host:container → avoids conflicts if host 8080 is in use
               volumes:
-                - spring-data:/app/filestorage/images  # persistent storage for uploads
+                - /srv/nfs_shared:/srv/nfs_shared:rw  # Mount NFS path from host
               restart: unless-stopped
               environment:
                 - PORT=8080  # container internal port
@@ -32,8 +32,6 @@
                 interval: 30s
                 timeout: 10s
                 retries: 5
-          volumes:
-            spring-data:
     - name: Deploy using docker-compose
       community.docker.docker_compose_v2:
         project_src: "{{ compose_dir }}"
