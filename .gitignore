@@ -2,6 +2,7 @@ filestorage/**
 autopush.sh
 # dun wanna put this into the repo
 .env
+.env.local
 HELP.md
 .gradle
 build/
@@ -39,4 +40,3 @@ out/
 
 ### VS Code ###
 .vscode/
-.env
