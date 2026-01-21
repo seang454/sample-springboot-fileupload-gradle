@@ -11,6 +11,6 @@ server:
 
 # /app/filestorage/images/
 file:
-  upload-img-dir: filestorage/images/
-  upload-img-client: /images/**
-  upload-file-dir: filestorage/data/
+  upload-img-dir: /srv/nfs_shared/
+  upload-img-client: /mnt/**
+  upload-file-dir: /srv/nfs_shared/
