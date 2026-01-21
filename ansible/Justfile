@@ -1,0 +1,5 @@
+build-image:
+    ansible-playbook -i inventory.ini local build-and-push-image.yaml --ask-become-pass
+
+deploy-image:
+    ansible-playbook -i inventory.ini deploy.yaml --ask-become-pass

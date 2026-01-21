@@ -1,0 +1,81 @@
+- name: Build, Test, and Push Spring Boot Docker Image
+  hosts: localhost
+  become: true
+
+  vars:
+    repo_name: "seang454"
+    image_name: "spring-fileupload1"
+    tag: "v1.0.0"
+    dockerhub_username: "seang454"
+    dockerhub_password: "YOUR_DOCKER_PAT
+
+  tasks:
+
+  # ============================================================
+  # 1️⃣ BUILD & TEST (Normal Spring)
+  # ============================================================
+
+  - name: Detect Maven project
+    stat:
+      path: ../pom.xml
+    register: pom
+
+  - name: Detect Gradle project
+    stat:
+      path: ../build.gradle
+    register: gradle
+
+  - name: Run Maven build & tests
+    command: mvn clean test
+    when: pom.stat.exists
+
+  - name: Run Gradle build & tests
+    command: ./gradlew clean test
+    args:
+      chdir: ../
+    when: gradle.stat.exists
+
+  - name: Fail if no build file found
+    fail:
+      msg: "No pom.xml or build.gradle found"
+    when: not pom.stat.exists and not gradle.stat.exists
+
+  # ============================================================
+  # 2️⃣ BUILD DOCKER IMAGE (Docker Compose v2)
+  # ============================================================
+
+  - name: Build Docker image using docker-compose v2
+    community.docker.docker_compose_v2:
+      project_src: ../docker       # folder with docker-compose.yml
+      build: policy                # build only if image missing
+      pull: missing                # pull base images only if missing
+      ignore_build_events: false
+
+  # ============================================================
+  # 3️⃣ LOGIN TO DOCKER HUB
+  # ============================================================
+
+  - name: Login to Docker Hub
+    community.docker.docker_login:
+      username: "{{ dockerhub_username }}"
+      password: "{{ dockerhub_password }}"
+
+  # ============================================================
+  # 4️⃣ PUSH DOCKER IMAGE
+  # ============================================================
+
+  - name: Push Docker image to Docker Hub
+    community.docker.docker_image:
+      name: "{{ dockerhub_username }}/{{ image_name }}"
+      tag: "{{ tag }}"
+      source: local    # <- This tells it to use an existing local image
+      push: true
+
+
+  # ============================================================
+  # 5️⃣ LOGOUT FROM DOCKER HUB
+  # ============================================================
+
+  - name: Logout from Docker Hub
+    community.docker.docker_login:
+      state: absent

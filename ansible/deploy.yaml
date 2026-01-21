@@ -1,0 +1,47 @@
+- name: deploy the built image to remote server using docker-compose
+  hosts: node1
+  become: yes
+  vars:
+    image_name: "seang454/spring-fileupload1:v1.0.0"
+    compose_dir: "/opt/fileupload-app"
+  tasks:
+    - name: Create docker-compose directory
+      ansible.builtin.file:
+        path: "{{ compose_dir }}"
+        state: directory
+        mode: '0755'
+    - name: Create docker-compose.yml file
+      ansible.builtin.copy:
+        dest: "{{ compose_dir }}/docker-compose.yml"
+        content: |
+          version: "3.9"
+          services:
+            spring-app:
+              image: seang454/spring-fileupload1:v1.0.0
+              container_name: spring-fileupload
+              ports:
+                - "8083:8080"  # host:container → avoids conflicts if host 8080 is in use
+              volumes:
+                - spring-data:/app/filestorage/images  # persistent storage for uploads
+              restart: unless-stopped
+              environment:
+                - PORT=8080  # container internal port
+              # optional healthcheck to make sure the app is up
+              healthcheck:
+                test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+                interval: 30s
+                timeout: 10s
+                retries: 5
+          volumes:
+            spring-data:
+    - name: Deploy using docker-compose
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        state: present # ensure containers are running
+        pull: missing # pull image only if missing and others like always is used to always pull, policy to pull based on the image tag, never to never pull
+        recreate: auto # recreate containers if the image has changed
+        remove_orphans: yes # we want to remove any old containers not defined in the compose file
+      register: output
+    - name: Display docker-compose output
+      ansible.builtin.debug:
+        var: output
