@@ -1,0 +1,17 @@
+services:
+  fileupload-srv:
+    image: seang454/spring-fileupload:v1.0.0
+    build:
+      context: ..                  # Spring project root
+      dockerfile: docker/dev.Dockerfile
+      args:
+        PORT: ${APP_PORT:-8080}
+      cache_from:
+        - spring-file-upload:v1.0.0
+    volumes:
+      - image-backup-vol:/app/filestorage/images
+    ports:
+      - 8080:${APP_PORT:-8080}
+
+volumes:
+  image-backup-vol:
