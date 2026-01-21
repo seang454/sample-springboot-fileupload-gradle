@@ -3,12 +3,11 @@
   become: true
 
   vars:
-    repo_name: "seang454"
-    image_name: "spring-fileupload"
-    tag: "v1.0.0"
-    dockerhub_username: "seang454"
-    dockerhub_password: "YOUR_DOCKER_PAT
-
+    repo_name: "{{ lookup('env','REPO_NAME') }}"
+    image_name: "{{ lookup('env','IMAGE_NAME') }}"
+    tag: "{{ lookup('env','TAG') }}"
+    dockerhub_username: "{{ lookup('env','DOCKERHUB_USERNAME') }}"
+    dockerhub_password: "{{ lookup('env','DOCKERHUB_PASSWORD') }}"
   tasks:
 
   # ============================================================
