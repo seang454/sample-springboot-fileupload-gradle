@@ -14,4 +14,4 @@ run-main-playbook:
 
 run-all:
     # Load env and run main playbook in one shell
-    bash -c "set -o allexport; source .env; set +o allexport; ansible-playbook -i inventory.ini main.yaml --ask-become-pass"
+    bash -c "set -o allexport; source .env.local; set +o allexport; ansible-playbook -i inventory.ini main.yaml --ask-become-pass"
