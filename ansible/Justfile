@@ -1,17 +1,17 @@
 build-image:
-    ansible-playbook -i inventory.ini local build-and-push-image.yaml --ask-become-pass
+    bash -c "set -o allexport; source ../.env; set +o allexport; ansible-playbook -i inventory.ini build-and-push-image.yaml --ask-become-pass"
 
 deploy-image:
-    ansible-playbook -i inventory.ini deploy.yaml --ask-become-pass
+    bash -c "set -o allexport; source ../.env; set +o allexport; ansible-playbook -i inventory.ini deploy.yaml --ask-become-pass"
 
 run-load-env:
     # Load environment variables from .env
-    set -o allexport && source .env && set +o allexport
+    set -o allexport && source ../.env && set +o allexport
 
 run-main-playbook:
     # Run your Ansible playbook
-    ansible-playbook -i inventory.ini main.yaml --ask-become-pass
+    bash -c "set -o allexport; source ../.env; set +o allexport; ansible-playbook -i inventory.ini main.yaml --ask-become-pass"
 
 run-all:
-    # Load env and run main playbook in one shell
-    bash -c "set -o allexport; source .env.local; set +o allexport; ansible-playbook -i inventory.ini main.yaml --ask-become-pass"
+    # Build, push, and deploy in sequence
+    bash -c "set -o allexport; source ../.env; set +o allexport; ansible-playbook -i inventory.ini main.yaml --ask-become-pass"
