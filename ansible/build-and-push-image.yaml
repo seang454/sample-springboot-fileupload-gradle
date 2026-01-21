@@ -11,7 +11,7 @@
   tasks:
 
   # ============================================================
-  # 1️⃣ BUILD & TEST (Normal Spring)
+  # 1️⃣ BUILD & TEST PLACE (Normal Spring)
   # ============================================================
 
   - name: Detect Maven project
