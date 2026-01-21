@@ -1,6 +1,7 @@
 filestorage/**
 autopush.sh
 # dun wanna put this into the repo
+.env
 HELP.md
 .gradle
 build/
